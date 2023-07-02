@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+
+{% block body %}
+<div class="container pt-5">
+    <h1 class="pt-5">LÜTFEN KAYIT OLURKEN GİRMİŞ OLDUĞUNUZ E-POSTA ADRESİNİZİ YAZINIZ</h1>
+    <div class="row pt-5">
+        <form method="post">
+            {% csrf_token %}
+            <input type="email" name="email" class="form-control" placeholder="E-Posta Adresinizi Giriniz">
+            <button type="submit" class="btn btn-dark mt-2">Gönder</button>
+        </form>
+    </div>
+</div>
+
+{% endblock body %}
+    

@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from .models import *
+from django.conf import settings
+from django.core.mail import send_mail
 
 def index(request):
     return render(request, 'index.html')
@@ -16,7 +19,32 @@ def TopicsListing(request):
 
 
 
+
+
 # USER 
+def sendMail(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        user = User.objects.get(email=email)
+        userinfo = Userinfo.objects.get(user=user)
+        subject = 'PAROLA HATIRLATMA'
+        message = "Merhaba :" + userinfo.user.first_name + " " + userinfo.user.last_name +  '\nPAROLAN: ' + userinfo.password
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail( subject, message, email_from, recipient_list )
+        return redirect('login')
+    else:
+        return render(request, 'user/şifreunutma.html')
+
+
+
+
+
+
+
+
+
+
 def Register(request):
     if request.method == "POST":
         name = request.POST.get('Name')
@@ -28,6 +56,8 @@ def Register(request):
 
         user = User.objects.create_user(first_name = name, last_name = surname, username=username, email=email, password=password)
         user.save()
+        userinfo = Userinfo(user=user, password=password)
+        userinfo.save()
         return redirect('index')
     return render(request, 'User/register.html')
 

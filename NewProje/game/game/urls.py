@@ -26,4 +26,5 @@ urlpatterns = [
     path('register/', Register, name='register'),
     path('login/', Login, name='login'),
     path('logout/', Logout, name='logout'),
+    path('şifreunutma/', sendMail, name='şifreunutma'),
 ]
