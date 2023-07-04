@@ -54,11 +54,32 @@ def Register(request):
         password = request.POST.get("password")
         password2 = request.POST.get("password2")
 
-        user = User.objects.create_user(first_name = name, last_name = surname, username=username, email=email, password=password)
-        user.save()
-        userinfo = Userinfo(user=user, password=password)
-        userinfo.save()
-        return redirect('index')
+        if password == password2:
+            BuyukHarf = False
+            Numara = False
+
+            for i in password:
+                if i.isupper():
+                    BuyukHarf = True
+                if i.isnumeric():
+                    Numara = True
+            
+            if BuyukHarf and Numara and len(password) >= 6:
+                if not User.objects.filter(username=username).exists():
+                    if not User.objects.filter(email=email).exists():
+                        user = User.objects.create_user(first_name = name, last_name = surname, username=username, email=email, password=password)
+                        user.save()
+                        userinfo = Userinfo(user=user, password=password)
+                        userinfo.save()
+                        return redirect('index')
+                    else:
+                        return redirect('register')
+                else:
+                    return redirect('register')
+            else:
+                return redirect('register')
+        else:
+            return redirect('register')
     return render(request, 'User/register.html')
 
 def Login(request):
