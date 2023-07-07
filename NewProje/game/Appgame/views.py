@@ -4,9 +4,17 @@ from django.contrib.auth import authenticate, login, logout
 from .models import *
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib import messages
+
 
 def index(request):
-    return render(request, 'index.html')
+    users = User.objects.all() # for döngüsü kullan
+    # user = User.objects.filter(first_name="fatih")  for döngüsü kullan
+    # user = User.objects.get(id=1)  for döngüsü kullanmana gerek yok çünkü sadece bir bilgi çekiceksin.
+    context={
+        'users':users,
+    }
+    return render(request, 'index.html', context)
 
 def contact(request):
     return render(request, 'contact.html')
@@ -37,7 +45,12 @@ def sendMail(request):
         return render(request, 'user/şifreunutma.html')
 
 
-
+def UserDeatil(request,uid):
+    user = User.objects.get(id=uid)
+    context={
+        'user':user,
+    }
+    return render(request, 'User/Detay.html', context)
 
 
 
@@ -57,13 +70,12 @@ def Register(request):
         if password == password2:
             BuyukHarf = False
             Numara = False
-
+            OzelKarakter = False
             for i in password:
                 if i.isupper():
                     BuyukHarf = True
                 if i.isnumeric():
                     Numara = True
-            
             if BuyukHarf and Numara and len(password) >= 6:
                 if not User.objects.filter(username=username).exists():
                     if not User.objects.filter(email=email).exists():
@@ -73,12 +85,16 @@ def Register(request):
                         userinfo.save()
                         return redirect('index')
                     else:
+                        messages.warning(request, 'Bu E-Mail Kullanılıyor!!')
                         return redirect('register')
                 else:
+                    messages.warning(request, 'Bu Kullanıcı Adı Kullanılıyor!!')
                     return redirect('register')
             else:
+                messages.warning(request, 'Şifreniz Büyük Harf veya Numara veya 6 karakterden kısadır!!')
                 return redirect('register')
         else:
+            messages.warning(request, 'Şifreleriniz Uyumsuz. Tekrar Deneyin!!')
             return redirect('register')
     return render(request, 'User/register.html')
 
@@ -88,23 +104,24 @@ def Login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        # yapanfatih78@gmail.com
         etisareti = False
         for i in username:
             if i == "@":
                 etisareti = True
         if username[-4:] == ".com" and etisareti:
-            try: 
+            try:
                 user = User.objects.get(email=username)
                 username = user.username
             except: 
-                return redirect('login') 
-
+                return redirect('login')
+            
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
             return redirect('index')
-
+        else:
+            messages.error(request, 'Kullanıcı Adı veya E-Posta Adresi veya Şifreniz Yanlış!!!')
+            return redirect('login')
     return render(request, 'User/login.html')
 
 def Logout(request):

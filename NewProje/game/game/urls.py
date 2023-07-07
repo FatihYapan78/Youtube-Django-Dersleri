@@ -27,4 +27,5 @@ urlpatterns = [
     path('login/', Login, name='login'),
     path('logout/', Logout, name='logout'),
     path('şifreunutma/', sendMail, name='şifreunutma'),
+    path('userdetay/<uid>', UserDeatil, name='userdetay'),
 ]

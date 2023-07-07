@@ -76,8 +76,10 @@ WSGI_APPLICATION = 'game.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'mongo_test',
+        'HOST': 'mongodb://localhost:27017', # Örn: 'localhost' veya 'mongodb://localhost:27017/'
+        'PORT': 27017, # Varsayılan MongoDB bağlantı noktası
     }
 }
 

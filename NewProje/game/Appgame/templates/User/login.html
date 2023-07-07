@@ -10,7 +10,14 @@
 
 {% block body %}
 <div class="container pt-5">
-    <div class="row pt-5">
+  <div class="row pt-5">
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li class="text-danger">{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
         <form method="POST" class="pt-5">
             {% csrf_token %}
             <!-- Email input -->
