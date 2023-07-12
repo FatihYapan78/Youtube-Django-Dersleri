@@ -55,8 +55,14 @@ style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/
                  3. İnputlara name yazılacak
                  4. Butonun type submit olucak.
             -->
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
+
+              <div class="form-outline mb-4">
+                <label class="form-label" for="form3Example1cg">Profil Fotoğrafı</label>
+                <input type="file" name="image" id="form3Example1cg" class="form-control form-control-lg" required/>
+              </div>
+
               <div class="form-outline mb-4">
                 <input type="text" name="Name" id="form3Example1cg" class="form-control form-control-lg" />
                 <label class="form-label" for="form3Example1cg">Name</label>

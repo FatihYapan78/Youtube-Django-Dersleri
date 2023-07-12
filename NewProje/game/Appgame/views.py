@@ -66,6 +66,7 @@ def Register(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         password2 = request.POST.get("password2")
+        image = request.FILES.get('image')
 
         if password == password2:
             BuyukHarf = False
@@ -81,7 +82,7 @@ def Register(request):
                     if not User.objects.filter(email=email).exists():
                         user = User.objects.create_user(first_name = name, last_name = surname, username=username, email=email, password=password)
                         user.save()
-                        userinfo = Userinfo(user=user, password=password)
+                        userinfo = Userinfo(user=user, password=password, profilimg=image)
                         userinfo.save()
                         return redirect('index')
                     else:
@@ -127,3 +128,35 @@ def Login(request):
 def Logout(request):
     logout(request)
     return redirect('index')
+
+def Profil(request):
+    user = User.objects.get(username=request.user)
+    userinfo = Userinfo.objects.get(user=user)
+
+    if request.method == "POST":
+        password = request.POST.get('password')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        if user.check_password(password):
+            if password1 != "":
+                if password1 == password2:
+                    user.set_password(password1)
+                    user.save()
+                    userinfo.password = password1
+                    userinfo.save()
+                    return redirect('login')
+                else:
+                    messages.info(request, "Şifreler Uyumsuz.")
+                    return redirect('profil')
+            else:
+                messages.info(request, "Yeni Şifre Kısmı Boş Bırakılamaz.")
+                return redirect('profil')
+        else:
+            messages.info(request, "Eski Şifreniz Yanlış.")
+            return redirect('profil')
+
+    return render(request, 'User/profil.html',{
+        'user':user,
+        'userinfo':userinfo,
+    })

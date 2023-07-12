@@ -48,7 +48,8 @@
             </ul>
             
             {% if request.user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="btn btn-dark">Çıkış Yap</a>
+                <a href="{% url 'profil' %}" class="btn btn-dark">Profil</a>
+                <a href="{% url 'logout' %}" class="btn btn-dark ms-2">Çıkış Yap</a>
             {% else %}
             <div class="d-none d-lg-block">
                 <a href="{% url 'register' %}" class="navbar-icon bi-person smoothscroll"></a>
